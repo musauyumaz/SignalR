@@ -21,6 +21,11 @@ $(document).ready(function () {
         $("#divCallerClientMessages").append("<li>" + message + "</li>");
     });
 
+    connection.on("ReceiveMessageForOthersClient", (message) => {
+        console.log("Gelen Mesaj : " + message);
+        $("#divOthersClientMessages").append("<li>" + message + "</li>");
+    });
+
     let spanClientCount = $("#spanConnectedClientCount");
     connection.on("ReceiveConnectedClientCountAllClient", (count) => {
         spanClientCount.text(count);
@@ -35,5 +40,9 @@ $(document).ready(function () {
     $("#btnSendMessageCallerClient").click(function () {
         const message = "hello world caller client";
         connection.invoke("BroadCastMessageToCallerClient", message).catch(err => console.error("hata", err));
+    });
+    $("#btnSendMessageOthersClient").click(function () {
+        const message = "hello world others client";
+        connection.invoke("BroadCastMessageToOthersClient", message).catch(err => console.error("hata", err));
     });
 });

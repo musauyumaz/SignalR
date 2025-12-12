@@ -8,17 +8,21 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 offset-2">
-            <button type="button" class="btn btn-primary">
-                Connected Client Count <span id="spanConnectedClientCount" class="badge text-bg-secondary">0</span>
-            </button>
+            <div class="card shadow-sm d-inline-flex flex-row align-items-center px-3 py-2 mx-1 my-1 border-primary">
+                <i class="bi bi-broadcast text-primary me-2 fs-5"></i>
+                <span class="text-muted small me-2">Online:</span>
+                <span id="spanConnectedClientCount" class="badge rounded-pill bg-success fs-6 px-3">0</span>
+            </div>
             
-            <button id="btnSendMessageAllClient">Tüm Clientlara Gönder</button>
-            <button id="btnSendMessageCallerClient">İstek Yapan Client'a Gönder</button>
+            <button id="btnSendMessageAllClient" class="btn btn-outline-primary mx-1 my-1">Tüm Clientlara Gönder</button>
+            <button id="btnSendMessageCallerClient" class="btn btn-outline-primary mx-1 my-1">İstek Yapan Client'a Gönder</button>
+            <button id="btnSendMessageOthersClient" class="btn btn-outline-primary mx-1 my-1">İstek Yapan Dışındaki Diğer Clientlar'a Gönder</button>
             <br/>
             <br/>
             
-            <div id="divAllClientMessages"></div>
-            <div id="divCallerClientMessages"></div>
+            <div style="color: red" id="divAllClientMessages"></div>
+            <div style="color: blue" id="divCallerClientMessages"></div>
+            <div style="color: green" id="divOthersClientMessages"></div>
         </div>
     </div>
 </div>
