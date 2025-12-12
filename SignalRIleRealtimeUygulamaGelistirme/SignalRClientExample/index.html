@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/9.0.6/signalr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+        <script>
+            $(document).ready(() => {
+                const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7259/myHub").build();
+
+                connection.start();
+                $("#btnGonder").click(() => {
+                    let message = $("#txtMessage").val();
+                    connection.invoke("SendMessageAsync",message).catch(error => console.log(`Mesaj Gönderilirken Hata Oluştu : ${error}`));
+                });
+
+                connection.on("receiveMessage",message => {
+                    $("div").append(message + "<br>");
+                })
+            });
+        </script>
+    </head>
+    <body>
+        <input type="text" id="txtMessage"/>
+        <button id="btnGonder">Gönder</button>
+        <div></div>
+    </body>
+</html>
