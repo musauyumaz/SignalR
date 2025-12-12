@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const connection = new signalR.HubConnectionBuilder().withUrl("/exampleHub").configureLogging(signalR.LogLevel.Information).build();
+    const connection = new signalR.HubConnectionBuilder().withUrl("/exampleTypeSafeHub").configureLogging(signalR.LogLevel.Information).build();
     
     
     function start(){

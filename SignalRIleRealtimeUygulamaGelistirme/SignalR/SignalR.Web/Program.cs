@@ -23,6 +23,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapHub<ExampleHub>("/exampleHub");
+app.MapHub<ExampleTypeSafeHub>("/exampleTypeSafeHub");
 
 app.MapControllerRoute(
         name: "default",
