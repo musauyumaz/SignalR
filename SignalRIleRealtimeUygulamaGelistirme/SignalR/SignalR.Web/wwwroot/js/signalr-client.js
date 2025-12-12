@@ -13,16 +13,27 @@ $(document).ready(function () {
     
     connection.on("ReceiveMessageForAllClient", (message) => {
         console.log("Gelen Mesaj : " + message);
-    })
+        $("#divAllClientMessages").append("<li>" + message + "</li>");
+    });
 
-    var spanClientCount = $("#spanConnectedClientCount");
+    connection.on("ReceiveMessageForCallerClient", (message) => {
+        console.log("Gelen Mesaj : " + message);
+        $("#divCallerClientMessages").append("<li>" + message + "</li>");
+    });
+
+    let spanClientCount = $("#spanConnectedClientCount");
     connection.on("ReceiveConnectedClientCountAllClient", (count) => {
         spanClientCount.text(count);
         console.log("Connected Client Count", count)
     })
     
     $("#btnSendMessageAllClient").click(function () {
-        const message = "hello world";
+        const message = "hello world all client";
         connection.invoke("BroadCastMessageToAllClient", message).catch(err => console.error("hata", err));
-    })
+    });
+    
+    $("#btnSendMessageCallerClient").click(function () {
+        const message = "hello world caller client";
+        connection.invoke("BroadCastMessageToCallerClient", message).catch(err => console.error("hata", err));
+    });
 });
