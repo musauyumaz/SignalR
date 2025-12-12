@@ -14,6 +14,12 @@ $(document).ready(function () {
     connection.on("ReceiveMessageForAllClient", (message) => {
         console.log("Gelen Mesaj : " + message);
     })
+
+    var spanClientCount = $("#spanConnectedClientCount");
+    connection.on("ReceiveConnectedClientCountAllClient", (count) => {
+        spanClientCount.text(count);
+        console.log("Connected Client Count", count)
+    })
     
     $("#btnSendMessageAllClient").click(function () {
         const message = "hello world";
