@@ -11,4 +11,14 @@ connection.StartAsync().ContinueWith(result => Console.WriteLine(result.IsComple
 
 connection.On<Product>("ReceiveTypedMessageForAllClient", (product) => Console.WriteLine($"Received Message: {product.Id} - {product.Name} : {product.Price}"));
 
-Console.ReadLine();
+
+while (true)
+{
+    string? key = Console.ReadLine();
+
+    if (key == "exit") break;
+    
+    var newProduct = new Product(200, "New Product", 100);
+    await connection.InvokeAsync("BroadCastTypedMessageToAllClient", newProduct);
+
+}
