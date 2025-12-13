@@ -3,7 +3,10 @@ $(document).ready(function () {
     
     
     function start(){
-        connection.start().then(() => console.log("Hub ile Bağlantı Kuruldu"));
+        connection.start().then(() => {
+            console.log("Hub ile Bağlantı Kuruldu");
+            $("#divConnectionId").html(`Connection Id: ${connection.connectionId}`);
+        });
     }
     try {
         start();
@@ -12,20 +15,25 @@ $(document).ready(function () {
     }
     
     connection.on("ReceiveMessageForAllClient", (message) => {
-        console.log("Gelen Mesaj : " + message);
+        console.log("All Client Gelen Mesaj : " + message);
         $("#divAllClientMessages").append("<li>" + message + "</li>");
     });
 
     connection.on("ReceiveMessageForCallerClient", (message) => {
-        console.log("Gelen Mesaj : " + message);
+        console.log("Caller Client Gelen Mesaj : " + message);
         $("#divCallerClientMessages").append("<li>" + message + "</li>");
     });
 
     connection.on("ReceiveMessageForOthersClient", (message) => {
-        console.log("Gelen Mesaj : " + message);
+        console.log("Others Clients Gelen Mesaj : " + message);
         $("#divOthersClientMessages").append("<li>" + message + "</li>");
     });
 
+    connection.on("ReceiveMessageForIndividualClient", (message) => {
+        console.log("Individual Gelen Mesaj : " + message);
+        $("#divIndividualClientMessages").append("<li>" + message + "</li>");
+    });
+    
     let spanClientCount = $("#spanConnectedClientCount");
     connection.on("ReceiveConnectedClientCountAllClient", (count) => {
         spanClientCount.text(count);
@@ -45,4 +53,9 @@ $(document).ready(function () {
         const message = "hello world others client";
         connection.invoke("BroadCastMessageToOthersClient", message).catch(err => console.error("hata", err));
     });
+    $("#btnSendMessageIndividualClient").click(function () {
+        const message = "Hello world individual client";
+        const connectionId = $("#txtConnectionId").val();
+        connection.invoke("BroadCastMessageToIndividualClient",connectionId, message).catch(err => console.error("hata", err));
+    })
 });
