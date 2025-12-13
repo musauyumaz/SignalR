@@ -83,6 +83,11 @@ $(document).ready(function () {
         spanClientCount.text(count);
         console.log("Connected Client Count", count)
     })
+
+    connection.on("ReceiveTypedMessageForAllClient", (product) => {
+        console.log("All Client Gelen ürün : ", product);
+        $("#divAllClientMessages").append(`<li>${product.id} - ${product.name} - ${product.price}</li>`);
+    });
     
     $("#btnSendMessageAllClient").click(function () {
         const message = "hello world all client";
@@ -111,5 +116,10 @@ $(document).ready(function () {
         const message = "Group B Message";
         const connectionId = $("#txtConnectionId").val();
         connection.invoke("BroadcastMessageToGroupClients","GroupB", message).catch(err => console.error("hata", err));
+    })
+    $("#btnSendTypedMessageAllClient").click(function () {
+        const product = {id: 1, name: "pen 1", price: 200};
+        connection.invoke("BroadCastTypedMessageToAllClient", product).catch(err => console.error("hata", err));
+        
     })
 });
