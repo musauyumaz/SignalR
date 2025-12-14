@@ -25,23 +25,23 @@ $(document).ready(function () {
     connection.on("ReceiveProductAsStreamForAllClient", (product) => {
         $("#streamBox").append(`<li>${product.id} - ${product.name} - ${product.price}</li>`)
     })
-    
-    
+
+
     $("#btnFromClientToHub").click(function () {
         const names = $("#txtStream").val();
         const nameAsChunk = names.split(";")
-        
+
         const subject = new signalR.Subject();
-        
+
         connection.send("BroadcastStreamDataToAllClient", subject).catch(err => console.error("hata", err));
-        
+
         nameAsChunk.forEach(name => {
             subject.next(name);
         });
-        
+
         subject.complete();
     });
-    
+
     $("#btnProductFromClientToHub").click(function () {
         var productList = [
             {id: 1, name: "pen 1", price: 200},
@@ -55,15 +55,21 @@ $(document).ready(function () {
             {id: 9, name: "pen 9", price: 1000},
             {id: 10, name: "pen 10", price: 1100}
         ]
-        
+
         const subject = new signalR.Subject();
-        
+
         connection.send("BroadcastStreamProductToAllClient", subject).catch(err => console.error("hata", err));
 
         productList.forEach(product => {
             subject.next(product);
         });
-        
+
         subject.complete();
     });
+
+    $("#btnFromHubToClient").click(function () {
+        connection.stream("BroadcastFromHubToClient", 25).subscribe({
+            next: (message) => $("#streamBox").append(`<p>${message}</p>`)
+        })
+    })
 });
