@@ -30,6 +30,15 @@ public class ExampleTypeSafeHub : Hub<IExampleTypeSafeHub>
         }
     }
 
+    public async IAsyncEnumerable<string> BroadcastFromHubToClient(int count)
+    {
+        foreach (var item in Enumerable.Range(1,count).ToList())
+        {
+            await Task.Delay(1000);
+            yield return $"{item}. data";
+        }
+    }
+
     public async Task BroadcastMessageToGroupClients(string groupName, string message)
     {
         await Clients.Group(groupName).ReceiveMessageForGroupClients(message);
