@@ -1,28 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/9.0.6/signalr.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-        <script>
-            $(document).ready(() => {
-                const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7259/myHub").build();
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/9.0.6/signalr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-                connection.start();
-                $("#btnGonder").click(() => {
-                    let message = $("#txtMessage").val();
-                    connection.invoke("SendMessageAsync",message).catch(error => console.log(`Mesaj Gönderilirken Hata Oluştu : ${error}`));
-                });
+    <script>
+        $(document).ready(() => {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7259/myHub")
+                .withAutomaticReconnect([1000, 1000, 2000, 3000, 5000, 10000]) //default olarak 0 - 2 - 10 - 30 saniye aralıklarla tekrardan talepte bulunacak. --> Bağlantı var lakin koptuğu durumlarda kullanılır.
+                .build();
 
-                connection.on("receiveMessage",message => {
-                    $("div").append(message + "<br>");
-                })
+            //Bağlantı hiç kurulmadığı durumlarda bu fonksiyon kullanılır.
+            async function start() {
+                try {
+                    await connection.start();
+                } catch (error) {
+                    setTimeout(() => start(), 2000);
+                }
+            }
+
+            //connection.start();
+            start();
+
+            const durum = $("#divDurum");
+            connection.onreconnecting(error => {
+                durum.css("background-color", "blue");
+                durum.css("color", "white");
+                durum.html("Bağlantı kuruluyor... : " + error);
+                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
             });
-        </script>
-    </head>
-    <body>
-        <input type="text" id="txtMessage"/>
-        <button id="btnGonder">Gönder</button>
-        <div></div>
-    </body>
+
+            connection.onreconnected(connectionId => {
+                durum.css("background-color", "green");
+                durum.css("color", "white");
+                durum.html("Bağlantı kuruldu... : " + connectionId);
+                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+            });
+
+            connection.onclose(connectionId => {
+                durum.css("background-color", "red");
+                durum.css("color", "white");
+                durum.html("Bağlanılamadı... : " + connectionId);
+                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+            });
+
+            $("#btnGonder").click(() => {
+                let message = $("#txtMessage").val();
+                connection.invoke("SendMessageAsync", message).catch(error => console.log(`Mesaj Gönderilirken Hata Oluştu : ${error}`));
+            });
+
+            connection.on("receiveMessage", message => {
+                $("#divMesajlar").append(message + "<br>");
+            });
+
+        });
+    </script>
+</head>
+
+<body>
+    <div id="divDurum" style="display: none;"></div>
+    <input type="text" id="txtMessage" />
+    <button id="btnGonder">Gönder</button>
+    <div id="divMesajlar"></div>
+</body>
+
 </html>
+
+<!--
+onreconnecting : Yeniden bağlanma girişimlerini başlatmadan önce fırlatılan/tetiklenen eventtir.
+onreconnected : Yeniden bağlantı gerçekleştiğinde tetiklenen fonksiyondur.
+onclose : Yeniden bağlantı girişimlerinin sonuçsuz kaldığı durumlarda kullanılır.
+-->
