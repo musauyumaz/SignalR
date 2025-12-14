@@ -12,6 +12,33 @@ public class ExampleTypeSafeHub : Hub<IExampleTypeSafeHub>
     public async Task BroadCastMessageToOthersClient(string message) => await Clients.Others.ReceiveMessageForOthersClient(message);
     public async Task BroadCastMessageToIndividualClient(string connectionId, string message) => await Clients.Client(connectionId).ReceiveMessageForIndividualClient(message);
 
+    public async Task BroadcastStreamDataToAllClient(IAsyncEnumerable<string> nameAsChunk)
+    {
+        await foreach (string name in nameAsChunk)
+        {
+            await Task.Delay(1000);
+            await Clients.All.ReceiveMessageAsStreamForAllClient(name);
+        }
+    }
+    
+    public async Task BroadcastStreamProductToAllClient(IAsyncEnumerable<Product> prouductAsChunk)
+    {
+        await foreach (Product product in prouductAsChunk)
+        {
+            await Task.Delay(1000);
+            await Clients.All.ReceiveProductAsStreamForAllClient(product);
+        }
+    }
+
+    public async IAsyncEnumerable<string> BroadcastFromHubToClient(int count)
+    {
+        foreach (var item in Enumerable.Range(1,count).ToList())
+        {
+            await Task.Delay(1000);
+            yield return $"{item}. data";
+        }
+    }
+
     public async Task BroadcastMessageToGroupClients(string groupName, string message)
     {
         await Clients.Group(groupName).ReceiveMessageForGroupClients(message);
