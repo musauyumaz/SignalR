@@ -20,6 +20,15 @@ public class ExampleTypeSafeHub : Hub<IExampleTypeSafeHub>
             await Clients.All.ReceiveMessageAsStreamForAllClient(name);
         }
     }
+    
+    public async Task BroadcastStreamProductToAllClient(IAsyncEnumerable<Product> prouductAsChunk)
+    {
+        await foreach (Product product in prouductAsChunk)
+        {
+            await Task.Delay(1000);
+            await Clients.All.ReceiveProductAsStreamForAllClient(product);
+        }
+    }
 
     public async Task BroadcastMessageToGroupClients(string groupName, string message)
     {
