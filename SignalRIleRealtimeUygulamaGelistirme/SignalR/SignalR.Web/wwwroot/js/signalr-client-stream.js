@@ -18,4 +18,23 @@ $(document).ready(function () {
     });
 
     start();
+
+    connection.on("ReceiveMessageAsStreamForAllClient", (name) => {
+        $("#streamBox").append(`<li>${name}</li>`)
+    })
+    
+    $("#btnFromClientToHub").click(function () {
+        const names = $("#txtStream").val();
+        const nameAsChunk = names.split(";")
+        
+        const subject = new signalR.Subject();
+        
+        connection.send("BroadcastStreamDataToAllClient", subject).catch(err => console.error("hata", err));
+        
+        nameAsChunk.forEach(name => {
+            subject.next(name);
+        });
+        
+        subject.complete();
+    });
 });
