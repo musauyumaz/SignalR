@@ -6,7 +6,7 @@ using SignalR.SampleProject.Models.ViewModels;
 
 namespace SignalR.SampleProject.Controllers;
 
-public class HomeController(UserManager<IdentityUser> userManager) : Controller
+public class HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : Controller
 {
     public IActionResult Index()
     {
@@ -47,10 +47,21 @@ public class HomeController(UserManager<IdentityUser> userManager) : Controller
     {
         return View();
     }
-    // public IActionResult SignIn()
-    // {
-    //     return View();
-    // }
+    [HttpPost]
+    public async Task<IActionResult> SignIn(SignUpViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+        
+        var hasUser = await userManager.FindByEmailAsync(model.Email);
+        if (hasUser == null) ModelState.AddModelError(string.Empty, "Email or Password is incorrect") ;
+        
+        var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
+        if (!result.Succeeded) ModelState.AddModelError(string.Empty, "Email or Password is incorrect") ;
+        
+        
+        
+        return RedirectToAction(nameof(Index));
+    }
 
     public IActionResult ProductList()
     {
