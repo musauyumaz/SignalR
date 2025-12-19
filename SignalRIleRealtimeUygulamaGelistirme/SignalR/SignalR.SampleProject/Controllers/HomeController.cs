@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SignalR.SampleProject.Models;
 using SignalR.SampleProject.Models.ViewModels;
 
 namespace SignalR.SampleProject.Controllers;
@@ -48,7 +47,7 @@ public class HomeController(UserManager<IdentityUser> userManager, SignInManager
         return View();
     }
     [HttpPost]
-    public async Task<IActionResult> SignIn(SignUpViewModel model)
+    public async Task<IActionResult> SignIn(SignInViewModel model)
     {
         if (!ModelState.IsValid) return View(model);
         
@@ -57,8 +56,6 @@ public class HomeController(UserManager<IdentityUser> userManager, SignInManager
         
         var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
         if (!result.Succeeded) ModelState.AddModelError(string.Empty, "Email or Password is incorrect") ;
-        
-        
         
         return RedirectToAction(nameof(Index));
     }
