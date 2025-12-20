@@ -1,0 +1,53 @@
+@model List<SignalR.SampleProject.Models.Entities.Product>
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#btnCreateExcel").click(function () {
+                $.ajax({
+                    url: "/Home/CreateExcel",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data)
+                        $(".toast-body").html("Excel Oluşturma isteği alınmıştır. Tamamlandığında bilgilendirileceksiniz.");
+                        $("#liveToast").show();
+                        toastTimeOut = setTimeout(() => {
+                            $("#liveToast").hide();
+                        },3000)
+                    },
+                    error: function (err) {
+                        console.error(err)
+                        alert("Excel dosyasını indirebilmeniz için üye olmanız gerekmektedir. ")
+                    }
+                })
+            })
+        })
+    </script>
+}
+
+<p><a class="btn btn-primary" href="#" id="btnCreateExcel">Create Excel</a></p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Price</td>
+            <td>@product.Description</td>
+        </tr>
+    }
+    </tbody>
+</table>
