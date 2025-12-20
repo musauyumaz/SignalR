@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using SignalR.SampleProject.BackgroundServices;
+using SignalR.SampleProject.Hubs;
 using SignalR.SampleProject.Models.Contexts;
 using SignalR.SampleProject.Models.Entities;
 using SignalR.SampleProject.Services;
@@ -21,6 +22,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<FileService>();
 builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 builder.Services.AddHostedService<CreateExcelBackgroundService>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -36,6 +38,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.MapHub<AppHub>("/hub");
 
 app.MapControllerRoute(
         name: "default",

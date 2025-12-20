@@ -2,7 +2,9 @@ using System.Data;
 using System.Threading.Channels;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.FileProviders;
+using SignalR.SampleProject.Hubs;
 using SignalR.SampleProject.Models.Entities;
 
 namespace SignalR.SampleProject.BackgroundServices;
@@ -29,6 +31,10 @@ public class CreateExcelBackgroundService(
             wb.Worksheets.Add(ds);
             await using var excelFileStream = new FileStream(newExcelFilePath, FileMode.Create);
             wb.SaveAs(excelFileStream);
+
+            using var scope =  serviceProvider.CreateScope();
+            var appHub = scope.ServiceProvider.GetRequiredService<IHubContext<AppHub>>();
+            await appHub.Clients.User(userId).SendAsync("AlertCompleteFile", $"/files/{newExcelFileName}", stoppingToken);
         }
     }
 
