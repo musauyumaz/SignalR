@@ -1,6 +1,8 @@
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using SignalR.SampleProject.BackgroundServices;
 using SignalR.SampleProject.Models.Contexts;
 using SignalR.SampleProject.Models.Entities;
 using SignalR.SampleProject.Services;
@@ -17,6 +19,8 @@ builder.Services.AddSingleton(Channel.CreateUnbounded<(string userId, List<Produ
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<FileService>();
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
+builder.Services.AddHostedService<CreateExcelBackgroundService>();
 
 var app = builder.Build();
 
