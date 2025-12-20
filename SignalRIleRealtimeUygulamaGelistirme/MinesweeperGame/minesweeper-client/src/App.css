@@ -1,0 +1,255 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* Main Container */
+.container {
+  max-width: 1400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Card Component */
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 15px 40px rgba(79, 70, 229, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Game Grid */
+.game-grid {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin: 1.5rem 0;
+  justify-items: center;
+}
+
+/* Cell Button */
+.cell {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--surface-light);
+  color: var(--text);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9em;
+}
+
+.cell:hover:not(:disabled) {
+  background-color: var(--primary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.cell:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cell.revealed {
+  background-color: var(--surface);
+  border-color: var(--primary);
+}
+
+.cell.mine {
+  background-color: var(--danger);
+  color: white;
+}
+
+.cell.safe {
+  background-color: var(--success);
+  color: white;
+}
+
+/* Player Info */
+.player-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.player-card {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  min-width: 200px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.player-card.active {
+  border: 2px solid var(--secondary);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+/* Form Inputs */
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.input-group input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.8em;
+}
+
+.input-group button {
+  padding: 0.8em 1.5em;
+}
+
+/* Chat Box */
+.chat-box {
+  background-color: var(--surface-light);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.chat-message {
+  background-color: var(--surface);
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+  border-left: 3px solid var(--primary);
+  text-align: left;
+}
+
+.chat-message .player-name {
+  font-weight: bold;
+  color: var(--primary-light);
+  font-size: 0.9em;
+}
+
+.chat-message .timestamp {
+  color: var(--text-secondary);
+  font-size: 0.8em;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* Status Messages */
+.status {
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+.status.success {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.status.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.status.warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--warning);
+  color: var(--warning);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cell {
+    width: 40px;
+    height: 40px;
+    font-size: 0.8em;
+  }
+  
+  .player-card {
+    min-width: 160px;
+    padding: 0.8rem 1rem;
+  }
+  
+  .chat-box {
+    max-height: 200px;
+  }
+  
+  h1 {
+    font-size: 1.8em;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 1rem;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .cell {
+    width: 35px;
+    height: 35px;
+    font-size: 0.7em;
+  }
+  
+  .input-group input {
+    min-width: 150px;
+  }
+}
