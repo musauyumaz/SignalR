@@ -24,26 +24,50 @@
             //connection.start();
             start();
 
+            function animation() {
+                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+            }
+
             const durum = $("#divDurum");
             connection.onreconnecting(error => {
                 durum.css("background-color", "blue");
                 durum.css("color", "white");
                 durum.html("Bağlantı kuruluyor... : " + error);
-                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+                animation();
             });
 
             connection.onreconnected(connectionId => {
                 durum.css("background-color", "green");
                 durum.css("color", "white");
                 durum.html("Bağlantı kuruldu... : " + connectionId);
-                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+                animation();
             });
 
             connection.onclose(connectionId => {
                 durum.css("background-color", "red");
                 durum.css("color", "white");
                 durum.html("Bağlanılamadı... : " + connectionId);
-                durum.fadeIn(2000, () => { setTimeout(() => { durum.fadeOut(2000); }, 2000) });
+                animation();
+            });
+
+            connection.on("UserJoined", connectionId => {
+                durum.html(`${connectionId} bağlandı.`);
+                durum.css("color", "green");
+                animation();
+            });
+
+            connection.on("clients", clientsData => {
+                let text = "";
+                $.each(clientsData, (index, item) => {
+                    text += `<li>${item}</li>`;
+                });
+                $("#clients").html(text);
+            });
+
+            connection.on("UserLeft", connectionId => {
+                durum.html(`${connectionId} ayrıldı.`);
+                durum.css("color", "red");
+                animation();
             });
 
             $("#btnGonder").click(() => {
@@ -64,6 +88,10 @@
     <input type="text" id="txtMessage" />
     <button id="btnGonder">Gönder</button>
     <div id="divMesajlar"></div>
+
+    <div> 
+        <ul id="clients"></ul>
+    </div>
 </body>
 
 </html>
