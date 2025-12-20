@@ -6,7 +6,7 @@ using SignalR.SampleProject.Models.Entities;
 
 namespace SignalR.SampleProject.Services;
 
-public class FileService(AppDbContext context, HttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager, Channel<(string userId, List<Product> products)> channel)
+public class FileService(AppDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager, Channel<(string userId, List<Product> products)> channel)
 {
     public async Task<bool> AddMessageToQueue()
     {

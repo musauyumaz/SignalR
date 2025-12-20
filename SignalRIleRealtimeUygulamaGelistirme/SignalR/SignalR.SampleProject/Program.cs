@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SignalR.SampleProject.Models.Contexts;
 using SignalR.SampleProject.Models.Entities;
+using SignalR.SampleProject.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddSingleton(Channel.CreateUnbounded<(string userId, List<Produ
 // builder.Services.AddSingleton(Channel.CreateUnbounded<Tuple<string, List<Product>>>());
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<FileService>();
 
 var app = builder.Build();
 
