@@ -1,17 +1,19 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SignalR.SampleProject.Models.Contexts;
 using SignalR.SampleProject.Models.Entities;
 using SignalR.SampleProject.Models.ViewModels;
+using SignalR.SampleProject.Services;
 
 namespace SignalR.SampleProject.Controllers;
 
 public class HomeController(
     UserManager<IdentityUser> userManager,
     SignInManager<IdentityUser> signInManager,
-    AppDbContext dbContext) : Controller
+    AppDbContext dbContext, FileService fileService) : Controller
 {
     public IActionResult Index()
     {
@@ -96,5 +98,16 @@ public class HomeController(
 
         var products = await dbContext.Products.Where(x => x.UserId == user.Id).ToListAsync();
         return View(products);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> CreateExcel()
+    {
+        var response = new
+        {
+            Status = await fileService.AddMessageToQueue()
+        };
+        return Json(response);
     }
 }

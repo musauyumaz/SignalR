@@ -1,22 +1,26 @@
+using System.Threading.Channels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SignalR.SampleProject.Models.Contexts;
+using SignalR.SampleProject.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLSERVER")));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddSingleton(Channel.CreateUnbounded<(string userId, List<Product> products)>());
+// builder.Services.AddSingleton(Channel.CreateUnbounded<Tuple<string, List<Product>>>());
+
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
